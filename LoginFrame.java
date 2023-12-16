@@ -3,8 +3,9 @@ import java.util.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.GridLayout;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import java.awt.Dimension;
+import javax.swing.event.*;
+
 
 class User {
     private String id;
@@ -92,7 +93,6 @@ class AddProductFrame extends JFrame implements ActionListener {
     private JTextField quantityField;
     private JTextField priceField;
     private JButton addButton;
-//     private JButton confirmButton;
     private JTextArea productListArea;
     private JScrollPane scrollPane;
     private User registeredUser;
@@ -175,7 +175,11 @@ class AddProductFrame extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(this, "Please enter valid numeric values for quantity and price.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
             }
         } else if (e.getSource() == proceedButton) {
-            openBuyProductsFrame(); // New method for handling the "Proceed" button
+            if (productList.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Inventory is empty.", "Empty Inventory", JOptionPane.WARNING_MESSAGE);
+            } else {
+                openBuyProductsFrame();
+            }
         }
     }
     
@@ -230,13 +234,18 @@ class BuyProductsFrame extends JFrame implements ActionListener {
 
         // Create components for selecting products and quantities
         quantitySpinners = new java.util.ArrayList<>();
-        JPanel productPanel = new JPanel(new GridLayout(productList.size(), 2));
+        JPanel productPanel = new JPanel(new GridLayout(productList.size(), 2, 10, 5));
 
         for (Product product : productList) {
             JLabel productLabel = new JLabel(product.getProductName());
             JSpinner quantitySpinner = new JSpinner(new SpinnerNumberModel(0, 0, product.getQuantity(), 1));
             productPanel.add(productLabel);
             productPanel.add(quantitySpinner);
+
+            // Set preferred size for the text fields
+            productLabel.setPreferredSize(new Dimension(150, 25));
+            quantitySpinner.setPreferredSize(new Dimension(150, 25));
+
             quantitySpinners.add(quantitySpinner);
             
             quantitySpinner.addChangeListener(new ChangeListener() {
@@ -257,10 +266,16 @@ class BuyProductsFrame extends JFrame implements ActionListener {
         generateIdButton = new JButton("Generate ID");
         generateIdButton.addActionListener(this);
         
-        transactionIdField = new JTextField();
+        transactionIdField = new JTextField(randomTransactionId);
+        transactionIdField.setEditable(false);
+        transactionIdField.setPreferredSize(new Dimension(150, 25)); // Set preferred size
+
         customerIdField = new JTextField();
+        customerIdField.setPreferredSize(new Dimension(150, 25)); // Set preferred size
+
         totalPriceField = new JTextField();
         totalPriceField.setEditable(false);
+        totalPriceField.setPreferredSize(new Dimension(150, 25)); // Set preferred size
 
         // Create Buy button
         buyButton = new JButton("Buy");
@@ -282,10 +297,11 @@ class BuyProductsFrame extends JFrame implements ActionListener {
         setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
         // Set frame properties
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(400, 200);
+         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
         setVisible(true);
+
 
         updateTotalPrice(); // Calculate and display the initial total price
     }
@@ -409,8 +425,10 @@ class RegisterFrame extends JFrame implements ActionListener {
         setLocationRelativeTo(null);
         setVisible(true);
         registeredUsers = new ArrayList<>();
+        
+        
     }
-
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         String id = idField.getText();
@@ -420,22 +438,36 @@ class RegisterFrame extends JFrame implements ActionListener {
         String confirmPassword = new String(confirmPasswordField.getPassword());
 
         if (e.getSource() == registerButton) {
-            if (validateInput(id, name, username, password, confirmPassword)) {
-                if (registerUser(id, name, username, password)) {
-                    registeredUser = new User(id, name, username, password);
-                    loginFrame.addRegisteredUser(registeredUser);
-                    JOptionPane.showMessageDialog(this, "Registration successful. You can now log in.");
-                    dispose();
-                    loginFrame.setVisible(true);
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "Invalid input. Please fill in all the fields.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
-            }
-        } else if (e.getSource() == signInButton) {
-            dispose();
-            loginFrame.setVisible(true);
+        // Validate input for numeric fields
+        if (!validateNumericInput(id)) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid numeric ID.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+            return;
         }
+
+        if (validateInput(id, name, username, password, confirmPassword)) {
+            if (registerUser(id, name, username, password)) {
+                registeredUser = new User(id, name, username, password);
+                loginFrame.addRegisteredUser(registeredUser);
+                JOptionPane.showMessageDialog(this, "Registration successful. You can now log in.");
+                dispose();
+                loginFrame.setVisible(true);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Invalid input. Please fill in all the fields.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+        }
+    } else if (e.getSource() == signInButton) {
+        dispose();
+        loginFrame.setVisible(true);
     }
+   }
+    private boolean validateNumericInput(String id) {
+    try {
+        Integer.parseInt(id);
+        return true;
+    } catch (NumberFormatException e) {
+        return false;
+    }
+   }
 
     private boolean validateInput(String id, String name, String username, String password, String confirmPassword) {
         return !id.isEmpty() && !name.isEmpty() && !username.isEmpty() && !password.isEmpty() && !confirmPassword.isEmpty();
