@@ -3,7 +3,6 @@ import java.util.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.GridLayout;
-import java.awt.Dimension;
 import javax.swing.event.*;
 
 
@@ -243,9 +242,6 @@ class BuyProductsFrame extends JFrame implements ActionListener {
             productPanel.add(quantitySpinner);
 
             // Set preferred size for the text fields
-            productLabel.setPreferredSize(new Dimension(150, 25));
-            quantitySpinner.setPreferredSize(new Dimension(150, 25));
-
             quantitySpinners.add(quantitySpinner);
             
             quantitySpinner.addChangeListener(new ChangeListener() {
@@ -268,14 +264,10 @@ class BuyProductsFrame extends JFrame implements ActionListener {
         
         transactionIdField = new JTextField(randomTransactionId);
         transactionIdField.setEditable(false);
-        transactionIdField.setPreferredSize(new Dimension(150, 25)); // Set preferred size
-
         customerIdField = new JTextField();
-        customerIdField.setPreferredSize(new Dimension(150, 25)); // Set preferred size
 
         totalPriceField = new JTextField();
         totalPriceField.setEditable(false);
-        totalPriceField.setPreferredSize(new Dimension(150, 25)); // Set preferred size
 
         // Create Buy button
         buyButton = new JButton("Buy");
@@ -297,8 +289,8 @@ class BuyProductsFrame extends JFrame implements ActionListener {
         setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
         // Set frame properties
-         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setSize(450, 300);
         setLocationRelativeTo(null);
         setVisible(true);
 
