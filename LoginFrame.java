@@ -105,6 +105,9 @@ class AddProductFrame extends JFrame implements ActionListener {
         }
         return total;
     }
+    public String getUserId() {
+    return registeredUser.getId();
+   }
 
     public AddProductFrame(User registeredUser) {
         super("Add Product");
@@ -183,7 +186,7 @@ class AddProductFrame extends JFrame implements ActionListener {
     }
     
     private void openBuyProductsFrame() {
-    BuyProductsFrame buyProductsFrame = new BuyProductsFrame(getProductList(), this);
+    BuyProductsFrame buyProductsFrame = new BuyProductsFrame(getProductList(), this, getUserId());
     buyProductsFrame.addWindowListener(new java.awt.event.WindowAdapter() {
         @Override
         public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -192,8 +195,6 @@ class AddProductFrame extends JFrame implements ActionListener {
     });
 }
 
-    
-    
 
     private void clearFields() {
         productNumberField.setText("");
@@ -225,7 +226,7 @@ class BuyProductsFrame extends JFrame implements ActionListener {
     private JButton buyButton;
     private JButton generateIdButton;
 
-    public BuyProductsFrame(List<Product> productList, AddProductFrame addProductFrame) {
+    public BuyProductsFrame(List<Product> productList, AddProductFrame addProductFrame, String userId) {
         super("Buy Products");
 
         this.productList = productList;
@@ -290,12 +291,14 @@ class BuyProductsFrame extends JFrame implements ActionListener {
 
         // Set frame properties
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(450, 300);
+        setSize(400, 300);
         setLocationRelativeTo(null);
         setVisible(true);
 
 
         updateTotalPrice(); // Calculate and display the initial total price
+        customerIdField.setText(userId);
+        customerIdField.setEditable(false);
     }
     
     // Method to generate a random transaction ID
