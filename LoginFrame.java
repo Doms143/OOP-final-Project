@@ -163,10 +163,22 @@ class AddProductFrame extends JFrame implements ActionListener {
         if (e.getSource() == addButton) {
             try {
                 String productNumber = productNumberField.getText();
+                if (!validateNumericInput(productNumber)) {
+                    JOptionPane.showMessageDialog(this, "Please enter a valid integer for the product number.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 String productName = productNameField.getText();
                 String description = descriptionField.getText();
+                
+                // Check if any of the required fields is empty
+                if (productName.isEmpty() || description.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Please fill in all required fields.", "Incomplete Information", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
                 int quantity = Integer.parseInt(quantityField.getText());
                 double price = Double.parseDouble(priceField.getText());
+                
 
                 Product newProduct = new Product(productNumber, productName, description, quantity, price);
                 productList.add(newProduct);
@@ -185,6 +197,15 @@ class AddProductFrame extends JFrame implements ActionListener {
         }
     }
     
+    private boolean validateNumericInput(String input) {
+        try {
+            Integer.parseInt(input);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
     private void openBuyProductsFrame() {
     BuyProductsFrame buyProductsFrame = new BuyProductsFrame(getProductList(), this, getUserId());
     buyProductsFrame.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -455,6 +476,17 @@ class RegisterFrame extends JFrame implements ActionListener {
         loginFrame.setVisible(true);
     }
    }
+   
+    private boolean validateNumericInput(String input, String fieldName) {
+        try {
+            Integer.parseInt(input);
+            return true;
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid integer for the " + fieldName + ".", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+    }
+    
     private boolean validateNumericInput(String id) {
     try {
         Integer.parseInt(id);
