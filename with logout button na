@@ -493,13 +493,28 @@ class BuyProductsFrame extends JFrame implements ActionListener {
         if (transactionId.isEmpty() || customerId.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter transaction details.", "Incomplete Details", JOptionPane.ERROR_MESSAGE);
         } else {
-            // Deduct the quantity from the AddProductFrame for selected products
-            for (int i = 0; i < quantitySpinners.size(); i++) {
-                int quantity = (int) quantitySpinners.get(i).getValue();
-                if (quantity > 0) {
-                    deductQuantity(productList.get(i).getProductName(), quantity);
-                }
+        // Check if at least one product is selected
+        boolean atLeastOneProductSelected = false;
+        for (int i = 0; i < quantitySpinners.size(); i++) {
+            int quantity = (int) quantitySpinners.get(i).getValue();
+            if (quantity > 0) {
+                atLeastOneProductSelected = true;
+                break;
             }
+        }
+        
+        if (!atLeastOneProductSelected) {
+            JOptionPane.showMessageDialog(this, "Please select at least one product to buy.", "No Product Selected", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // Deduct the quantity from the AddProductFrame for selected products
+        for (int i = 0; i < quantitySpinners.size(); i++) {
+            int quantity = (int) quantitySpinners.get(i).getValue();
+            if (quantity > 0) {
+                deductQuantity(productList.get(i).getProductName(), quantity);
+            }
+        }
 
             // Process the purchase (you can add your logic here)
         String purchaseDetails = "Purchase successful!\n";
