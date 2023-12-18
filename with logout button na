@@ -566,7 +566,7 @@ class RegisterFrame extends JFrame implements ActionListener {
         usernameField = new JTextField();
         passwordField = new JPasswordField();
         confirmPasswordField = new JPasswordField();
-        registerButton = new JButton("Register");
+        registerButton = new JButton("Register Now!");
         signInButton = new JButton("Sign-In");
 
         // Create a panel for the fields with a left-aligned box layout
@@ -690,7 +690,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         usernameField = new JTextField();
         passwordField = new JPasswordField();
         loginButton = new JButton("Login");
-        registerButton = new JButton("Register");
+        registerButton = new JButton("Sign-Up");
 
         setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
